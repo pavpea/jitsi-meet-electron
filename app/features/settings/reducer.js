@@ -9,7 +9,7 @@ import {
 
 const DEFAULT_STATE = {
     alwaysOnTopWindowEnabled: true,
-    disableAGC: false,
+    disableAGC: true,
     serverURL: undefined,
     serverTimeout: undefined
 };

@@ -13,7 +13,7 @@ export default {
     /**
      * Application name.
      */
-    appName: 'Jitsi Meet',
+    appName: 'PavPea Meet',
 
     /**
     * The prefix for application protocol.
@@ -24,12 +24,12 @@ export default {
     /**
      * The default server URL of Jitsi Meet Deployment that will be used.
      */
-    defaultServerURL: 'https://meet.jit.si',
+    defaultServerURL: 'https://meeting.qiuxiaotao.cn',
 
     /**
      * The default server Timeout in seconds.
      */
-    defaultServerTimeout: 30,
+    defaultServerTimeout: 5,
 
     /**
      * URL to send feedback.
