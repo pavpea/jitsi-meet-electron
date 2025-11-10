@@ -12,7 +12,8 @@ const {
     BrowserWindow,
     Menu,
     app,
-    ipcMain
+    ipcMain,
+    session
 } = require('electron');
 const contextMenu = require('electron-context-menu');
 const debug = require('electron-debug');
@@ -177,7 +178,29 @@ function setApplicationMenu() {
 function createJitsiMeetWindow() {
     // Application menu.
     setApplicationMenu();
+    console.log('正在配置应用代理...');
 
+    // 【请修改这里】设置您的代理服务器地址 (SOCKS5 或 HTTP)
+    const proxyServer = 'socks5://127.0.0.1:1080';
+
+    // 【重要】设置代理绕过规则
+    // <local> = 绕过本地地址
+    // *.qiuxiaotao.cn = 必须绕过您自己的 Jitsi 服务器，否则无法连接
+    const bypassRules = '<local>,*.qiuxiaotao.cn';
+
+    const proxyConfig = {
+      proxyRules: proxyServer,
+      proxyBypassRules: bypassRules
+    };
+
+    // 将配置应用到默认的 session
+    session.defaultSession.setProxy(proxyConfig)
+      .then(() => {
+        console.log(`代理设置成功: ${proxyServer} | 绕过: ${bypassRules}`);
+      })
+      .catch((err) => {
+        console.error('设置代理失败:', err);
+      });
     // Check for Updates.
     if (!process.mas) {
         autoUpdater.checkForUpdatesAndNotify();
