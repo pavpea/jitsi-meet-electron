@@ -1,2 +1,1 @@
-export * from './components';
-export * from './styled';
+export { default as Welcome } from './components/Welcome';

@@ -181,7 +181,7 @@ function createJitsiMeetWindow() {
     console.log('正在配置应用代理...');
 
     // 【请修改这里】设置您的代理服务器地址 (SOCKS5 或 HTTP)
-    const proxyServer = 'socks5://127.0.0.1:1080';
+    const proxyServer = 'socks5://127.0.0.1:7897';
 
     // 【重要】设置代理绕过规则
     // <local> = 绕过本地地址
@@ -208,8 +208,8 @@ function createJitsiMeetWindow() {
 
     // Load the previous window state with fallback to defaults.
     const windowState = windowStateKeeper({
-        defaultWidth: 800,
-        defaultHeight: 600,
+        defaultWidth: 1600,
+        defaultHeight: 900,
         fullScreen: false
     });
 
