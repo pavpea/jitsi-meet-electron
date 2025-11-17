@@ -42,7 +42,8 @@ app.commandLine.appendSwitch('disable-site-isolation-trials');
 const disabledFeatures = [
     'ThumbnailCapturerMac:capture_mode/sc_screenshot_manager',
     'ScreenCaptureKitPickerScreen',
-    'ScreenCaptureKitStreamPickerSonoma'
+    'ScreenCaptureKitStreamPickerSonoma',
+    'WebRtcAllowInputVolumeAdjustment' // 【已添加】禁用 WebRTC 自动调整麦克风音量
 ];
 
 app.commandLine.appendSwitch('disable-features', disabledFeatures.join(','));
