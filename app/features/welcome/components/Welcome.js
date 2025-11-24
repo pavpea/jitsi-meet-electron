@@ -76,7 +76,7 @@ class Welcome extends Component {
             enable: false,
             type: 'socks5',
             host: '127.0.0.1',
-            port: '7890'
+            port: '7897'
         };
 
         this.state = {
@@ -194,7 +194,7 @@ class Welcome extends Component {
         document.body.classList.remove('is-focused');
     }
 
-    // --- 设置相关方法 (核心修改) ---
+    // --- 设置相关方法 ---
 
     _toggleSettings = () => {
         this.setState(prev => {
@@ -376,7 +376,7 @@ class Welcome extends Component {
                 
                 <Wrapper>
                     <Helmet>
-                        <title>秋晓桃の会议室</title>
+                        {/* 【修改】移除了 title 标签，只保留资源链接，避免覆盖 index.html 的标题 */}
                         <link 
                             href="https://api.hoshiroko.com/libs/fontawesome/css/all.min.css" 
                             rel="stylesheet" 

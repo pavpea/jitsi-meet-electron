@@ -1,9 +1,9 @@
 {
-  "name": "jitsi-meet-electron",
-  "version": "2025.11.24",
-  "description": "Electron application for Jitsi Meet",
+  "name": "pavpea-meet-electron",
+  "version": "2025.11.25",
+  "description": "PavPea Meet",
   "main": "./build/main.js",
-  "productName": "Jitsi Meet",
+  "productName": "PavPea Meet",
   "private": true,
   "scripts": {
     "start": "webpack --config ./webpack.main.js --mode development && concurrently \"npm:watch\" \"electron ./build/main.js\"",
@@ -19,8 +19,8 @@
     "node": ">=22.0.0"
   },
   "build": {
-    "appId": "org.jitsi.jitsi-meet",
-    "productName": "Jitsi Meet",
+    "appId": "org.pavpea.jitsi-meet",
+    "productName": "PavPea Meet",
     "generateUpdatesFilesForAllChannels": true,
     "npmRebuild": false,
     "files": [
@@ -30,7 +30,7 @@
       "!main.js"
     ],
     "mac": {
-      "artifactName": "jitsi-meet.${ext}",
+      "artifactName": "pavpea-meet.${ext}",
       "target": [
         {
           "arch": "universal",
@@ -45,8 +45,8 @@
       "darkModeSupport": true,
       "entitlements": "resources/entitlements.mac.plist",
       "extendInfo": {
-        "NSCameraUsageDescription": "Jitsi Meet requires access to your camera in order to make video-calls.",
-        "NSMicrophoneUsageDescription": "Jitsi Meet requires access to your microphone in order to make calls (audio/video).",
+        "NSCameraUsageDescription": "PavPea Meet requires access to your camera in order to make video-calls.",
+        "NSMicrophoneUsageDescription": "PavPea Meet requires access to your microphone in order to make calls (audio/video).",
         "LSMultipleInstancesProhibited": true
       }
     },
@@ -56,10 +56,10 @@
       "hardenedRuntime": false
     },
     "linux": {
-      "artifactName": "jitsi-meet-${arch}.${ext}",
+      "artifactName": "pavpea-meet-${arch}.${ext}",
       "category": "VideoConference;AudioVideo;Audio;Video;Network",
-      "description": "Jitsi Meet Desktop App",
-      "executableName": "jitsi-meet",
+      "description": "PavPea Meet Desktop App",
+      "executableName": "pavpea-meet",
       "target": [
         {
           "arch": "x64",
@@ -80,7 +80,7 @@
       ]
     },
     "win": {
-      "artifactName": "jitsi-meet.${ext}",
+      "artifactName": "pavpea-meet.${ext}",
       "target": [
         {
           "arch": [
@@ -119,7 +119,7 @@
     "electron",
     "jitsi-meet"
   ],
-  "author": "Jitsi Team <support@jitsi.org>",
+  "author": "PavPea Team <support@qiuxiaotao.cn>",
   "readmeFilename": "README.md",
   "license": "Apache-2.0",
   "dependencies": {
