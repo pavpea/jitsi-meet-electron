@@ -22,6 +22,7 @@ const { autoUpdater } = require('electron-updater');
 const windowStateKeeper = require('electron-window-state');
 const path = require('path');
 const process = require('process');
+const fs = require('fs'); // 引入 fs 模块
 const URL = require('url');
 
 const config = require('./app/features/config');
@@ -102,6 +103,72 @@ const appProtocolSurplus = `${config.default.appProtocolPrefix}://`;
 let rendererReady = false;
 let protocolDataForFrontApp = null;
 
+// --- 代理配置逻辑 Start ---
+
+// 代理配置存储路径
+const PROXY_CONFIG_PATH = path.join(app.getPath('userData'), 'proxy-config.json');
+
+/**
+ * 读取本地存储的代理配置
+ * @returns {Object} 代理配置对象
+ */
+function loadProxyConfig() {
+    try {
+        if (fs.existsSync(PROXY_CONFIG_PATH)) {
+            const data = fs.readFileSync(PROXY_CONFIG_PATH, 'utf-8');
+            return JSON.parse(data);
+        }
+    } catch (e) {
+        console.error('读取代理配置失败:', e);
+    }
+    // 默认配置
+    return { enable: false, type: 'socks5', host: '127.0.0.1', port: '7890' };
+}
+
+/**
+ * 保存代理配置到本地文件
+ * @param {Object} config 新的代理配置
+ * @returns {boolean} 是否保存成功
+ */
+function saveProxyConfig(config) {
+    try {
+        fs.writeFileSync(PROXY_CONFIG_PATH, JSON.stringify(config, null, 2));
+        return true;
+    } catch (e) {
+        console.error('保存代理配置失败:', e);
+        return false;
+    }
+}
+
+/**
+ * 将代理配置应用到 Electron 的默认 Session
+ * @param {Object} config 代理配置
+ */
+function applyProxySettings(config) {
+    if (!config.enable) {
+        console.log('代理已禁用，使用直连模式。');
+        session.defaultSession.setProxy({ proxyRules: null });
+        return;
+    }
+
+    const proxyRule = `${config.type}://${config.host}:${config.port}`;
+    // 设置绕过规则：<local> 表示绕过本地地址
+    const bypassRules = '<local>';
+
+    console.log(`正在应用代理设置: ${proxyRule} | 绕过: ${bypassRules}`);
+
+    session.defaultSession.setProxy({
+        proxyRules: proxyRule,
+        proxyBypassRules: bypassRules
+    }).then(() => {
+        console.log('代理设置应用成功');
+    }).catch((err) => {
+        console.error('代理设置应用失败:', err);
+    });
+}
+
+// --- 代理配置逻辑 End ---
+
 
 /**
  * Sets the application menu. It is hidden on all platforms except macOS because
@@ -179,29 +246,11 @@ function setApplicationMenu() {
 function createJitsiMeetWindow() {
     // Application menu.
     setApplicationMenu();
-    console.log('正在配置应用代理...');
 
-    // 【请修改这里】设置您的代理服务器地址 (SOCKS5 或 HTTP)
-    const proxyServer = 'socks5://127.0.0.1:7897';
+    // --- 初始化时应用代理配置 ---
+    const currentProxyConfig = loadProxyConfig();
+    applyProxySettings(currentProxyConfig);
 
-    // 【重要】设置代理绕过规则
-    // <local> = 绕过本地地址
-    // *.qiuxiaotao.cn = 必须绕过您自己的 Jitsi 服务器，否则无法连接
-    const bypassRules = '<local>,*.qiuxiaotao.cn';
-
-    const proxyConfig = {
-      proxyRules: proxyServer,
-      proxyBypassRules: bypassRules
-    };
-
-    // 将配置应用到默认的 session
-    session.defaultSession.setProxy(proxyConfig)
-      .then(() => {
-        console.log(`代理设置成功: ${proxyServer} | 绕过: ${bypassRules}`);
-      })
-      .catch((err) => {
-        console.error('设置代理失败:', err);
-      });
     // Check for Updates.
     if (!process.mas) {
         autoUpdater.checkForUpdatesAndNotify();
@@ -240,7 +289,7 @@ function createJitsiMeetWindow() {
         webPreferences: {
             enableBlinkFeatures: 'WebAssemblyCSP',
             contextIsolation: false,
-            nodeIntegration: false,
+            nodeIntegration: true, // 开启 nodeIntegration 以允许渲染进程使用 IPC
             preload: path.resolve(basePath, './build/preload.js'),
             sandbox: false
         }
@@ -518,3 +567,26 @@ ipcMain.on('renderer-ready', () => {
 ipcMain.on('jitsi-open-url', (event, someUrl) => {
     openExternalLink(someUrl);
 });
+
+// --- IPC 代理设置处理 Start ---
+
+/**
+ * 接收前端保存代理配置的请求
+ */
+ipcMain.on('save-proxy-settings', (event, newConfig) => {
+    console.log('收到新的代理配置请求:', newConfig);
+    if (saveProxyConfig(newConfig)) {
+        applyProxySettings(newConfig);
+        // 可以在这里回复前端保存成功的消息（可选）
+    }
+});
+
+/**
+ * 发送当前代理配置给前端（用于初始化设置弹窗）
+ */
+ipcMain.on('get-proxy-settings', (event) => {
+    const config = loadProxyConfig();
+    event.sender.send('current-proxy-settings', config);
+});
+
+// --- IPC 代理设置处理 End ---
