@@ -354,7 +354,7 @@ class Welcome extends Component {
                             type="number" 
                             value={tempProxyConfig.port}
                             onChange={e => this._handleProxyChange('port', e.target.value)}
-                            placeholder="7890"
+                            placeholder="7897" // 【修改】Placeholder 改为 7897
                         />
                     </ModalField>
 
@@ -385,7 +385,6 @@ class Welcome extends Component {
                     
                     <Overlay />
 
-                    {/* 【修改】图标改为 fa-globe */}
                     <SettingsButton onClick={this._toggleSettings} title="网络设置">
                         <i className="fas fa-globe"></i>
                     </SettingsButton>

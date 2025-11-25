@@ -57,9 +57,10 @@ module.exports = {
                 ],
                 test: /\.css$/
             },
+            // 【修改点】替换原有的 file-loader (只支持png)，改为 asset/resource 以支持多种图片格式
             {
-                use: 'file-loader',
-                test: /\.png$/
+                test: /\.(png|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
             },
             {
                 test: /\.svg$/,

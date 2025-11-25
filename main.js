@@ -15,7 +15,7 @@ const {
     ipcMain,
     session
 } = require('electron');
-const contextMenu = require('electron-context-menu');
+// const contextMenu = require('electron-context-menu'); // 【修改】注释掉或移除这个库的引用
 const debug = require('electron-debug');
 const isDev = require('electron-is-dev');
 const { autoUpdater } = require('electron-updater');
@@ -60,17 +60,17 @@ if (!app.commandLine.hasSwitch('enable-features')) {
 autoUpdater.logger = require('electron-log');
 autoUpdater.logger.transports.file.level = 'info';
 
-// Enable context menu so things like copy and paste work in input fields.
-contextMenu({
-    showLookUpSelection: false,
-    showSearchWithGoogle: false,
-    showCopyImage: false,
-    showCopyImageAddress: false,
-    showSaveImage: false,
-    showSaveImageAs: false,
-    showInspectElement: true,
-    showServices: false
-});
+// 【修改】移除或注释掉 contextMenu 配置，禁用默认的右键菜单行为
+// contextMenu({
+//     showLookUpSelection: false,
+//     showSearchWithGoogle: false,
+//     showCopyImage: false,
+//     showCopyImageAddress: false,
+//     showSaveImage: false,
+//     showSaveImageAs: false,
+//     showInspectElement: true,
+//     showServices: false
+// });
 
 // Enable DevTools also on release builds to help troubleshoot issues. Don't
 // show them automatically though.
@@ -122,7 +122,7 @@ function loadProxyConfig() {
         console.error('读取代理配置失败:', e);
     }
     // 默认配置
-    return { enable: false, type: 'socks5', host: '127.0.0.1', port: '7890' };
+    return { enable: false, type: 'socks5', host: '127.0.0.1', port: '7897' };
 }
 
 /**
@@ -314,6 +314,13 @@ function createJitsiMeetWindow() {
     mainWindow = new BrowserWindow(options);
     windowState.manage(mainWindow);
     mainWindow.loadURL(indexURL);
+
+    // 【新增】全局禁用右键菜单
+    mainWindow.webContents.on('context-menu', (e) => {
+        e.preventDefault();
+    });
+
+    // 【修改】已移除键盘刷新拦截逻辑
 
     mainWindow.webContents.setWindowOpenHandler(windowOpenHandler);
 

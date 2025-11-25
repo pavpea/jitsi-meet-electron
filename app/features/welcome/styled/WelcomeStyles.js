@@ -1,4 +1,6 @@
 import styled, { injectGlobal, keyframes, css } from 'styled-components';
+// 【修改】引入本地背景图片
+import bgImage from '../../../images/background.jpg';
 
 const transitionSpeed = '0.5s';
 
@@ -59,7 +61,8 @@ export const Background = styled.div`
     width: 100%; 
     height: 100%;
     z-index: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('https://qiuxiaotao.cn/background.jpg') no-repeat center center;
+    /* 【修改】使用本地变量 ${bgImage} */
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${bgImage}) no-repeat center center;
     background-size: cover;
     transition: filter ${transitionSpeed} ease-out, transform ${transitionSpeed} ease-out;
     
@@ -154,7 +157,7 @@ export const StyledInput = styled.input`
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         color: #ffffff;
 
-        /* 【修改】聚焦时隐藏提示文字 */
+        /* 聚焦时隐藏提示文字 */
         &::placeholder {
             color: transparent;
         }
@@ -245,11 +248,11 @@ export const HistoryClearButton = styled.button`
         transform: scale(1.05);
     }
     
-    /* 输入模式（浅色背景） - 更低调 */
+    /* 输入模式（浅色背景） */
     body.is-focused & {
         background-color: transparent;
-        color: rgba(255, 255, 255, 0.6); /* 调暗文字颜色 */
-        border-color: rgba(255, 255, 255, 0.1); /* 边框几乎隐形 */
+        color: rgba(255, 255, 255, 0.6);
+        border-color: rgba(255, 255, 255, 0.1);
         text-shadow: none;
         
         &:hover {
